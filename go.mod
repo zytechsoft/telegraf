@@ -1,5 +1,7 @@
 module github.com/influxdata/telegraf
 
+replace github.com/amenzhinsky/iothub => /go/src/github.com/influxdata/telegraf/plugins/outputs/azure_iothub/iothub
+
 go 1.12
 
 require (
@@ -18,7 +20,8 @@ require (
 	github.com/Shopify/sarama v1.24.1
 	github.com/StackExchange/wmi v0.0.0-20180116203802-5d049714c4a6
 	github.com/aerospike/aerospike-client-go v1.27.0
-	github.com/alecthomas/units v0.0.0-20190717042225-c3de453c63f4
+	github.com/alecthomas/units v0.0.0-20151022065526-2efee857e7cf
+	github.com/amenzhinsky/iothub v0.6.0
 	github.com/amir/raidman v0.0.0-20170415203553-1ccc43bfb9c9
 	github.com/apache/thrift v0.12.0
 	github.com/aristanetworks/glog v0.0.0-20191112221043-67e8567f59f3 // indirect
@@ -77,6 +80,7 @@ require (
 	github.com/jackc/fake v0.0.0-20150926172116-812a484cc733 // indirect
 	github.com/jackc/pgx v3.6.0+incompatible
 	github.com/jcmturner/gofork v1.0.0 // indirect
+	github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a
 	github.com/kardianos/service v1.0.0
 	github.com/karrick/godirwalk v1.12.0
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51
