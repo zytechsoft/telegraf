@@ -21,10 +21,7 @@ func compareMetrics(t *testing.T, expected, actual []telegraf.Metric) {
 	}
 }
 
-func Metric(v telegraf.Metric, err error) telegraf.Metric {
-	if err != nil {
-		panic(err)
-	}
+func Metric(v telegraf.Metric) telegraf.Metric {
 	return v
 }
 

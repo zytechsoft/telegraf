@@ -13,10 +13,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func MustMetric(v telegraf.Metric, err error) telegraf.Metric {
-	if err != nil {
-		panic(err)
-	}
+func MustMetric(v telegraf.Metric) telegraf.Metric {
 	return v
 }
 
@@ -28,12 +25,11 @@ func TestSerializeMetricFloat(t *testing.T) {
 	fields := map[string]interface{}{
 		"usage_idle": float64(91.5),
 	}
-	m, err := metric.New("cpu", tags, fields, now)
-	assert.NoError(t, err)
+	m := metric.New("cpu", tags, fields, now)
 
 	s, _ := NewSerializer(0)
 	var buf []byte
-	buf, err = s.Serialize(m)
+	buf, err := s.Serialize(m)
 	assert.NoError(t, err)
 	expS := []byte(fmt.Sprintf(`{"fields":{"usage_idle":91.5},"name":"cpu","tags":{"cpu":"cpu0"},"timestamp":%d}`, now.Unix()) + "\n")
 	assert.Equal(t, string(expS), string(buf))
@@ -104,12 +100,11 @@ func TestSerializeMetricInt(t *testing.T) {
 	fields := map[string]interface{}{
 		"usage_idle": int64(90),
 	}
-	m, err := metric.New("cpu", tags, fields, now)
-	assert.NoError(t, err)
+	m := metric.New("cpu", tags, fields, now)
 
 	s, _ := NewSerializer(0)
 	var buf []byte
-	buf, err = s.Serialize(m)
+	buf, err := s.Serialize(m)
 	assert.NoError(t, err)
 
 	expS := []byte(fmt.Sprintf(`{"fields":{"usage_idle":90},"name":"cpu","tags":{"cpu":"cpu0"},"timestamp":%d}`, now.Unix()) + "\n")
@@ -124,12 +119,11 @@ func TestSerializeMetricString(t *testing.T) {
 	fields := map[string]interface{}{
 		"usage_idle": "foobar",
 	}
-	m, err := metric.New("cpu", tags, fields, now)
-	assert.NoError(t, err)
+	m := metric.New("cpu", tags, fields, now)
 
 	s, _ := NewSerializer(0)
 	var buf []byte
-	buf, err = s.Serialize(m)
+	buf, err := s.Serialize(m)
 	assert.NoError(t, err)
 
 	expS := []byte(fmt.Sprintf(`{"fields":{"usage_idle":"foobar"},"name":"cpu","tags":{"cpu":"cpu0"},"timestamp":%d}`, now.Unix()) + "\n")
@@ -145,12 +139,11 @@ func TestSerializeMultiFields(t *testing.T) {
 		"usage_idle":  int64(90),
 		"usage_total": 8559615,
 	}
-	m, err := metric.New("cpu", tags, fields, now)
-	assert.NoError(t, err)
+	m := metric.New("cpu", tags, fields, now)
 
 	s, _ := NewSerializer(0)
 	var buf []byte
-	buf, err = s.Serialize(m)
+	buf, err := s.Serialize(m)
 	assert.NoError(t, err)
 
 	expS := []byte(fmt.Sprintf(`{"fields":{"usage_idle":90,"usage_total":8559615},"name":"cpu","tags":{"cpu":"cpu0"},"timestamp":%d}`, now.Unix()) + "\n")
@@ -165,8 +158,7 @@ func TestSerializeMetricWithEscapes(t *testing.T) {
 	fields := map[string]interface{}{
 		"U,age=Idle": int64(90),
 	}
-	m, err := metric.New("My CPU", tags, fields, now)
-	assert.NoError(t, err)
+	m := metric.New("My CPU", tags, fields, now)
 
 	s, _ := NewSerializer(0)
 	buf, err := s.Serialize(m)

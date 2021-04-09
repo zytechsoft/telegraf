@@ -12,10 +12,7 @@ import (
 	"github.com/influxdata/telegraf/metric"
 )
 
-func MustMetric(v telegraf.Metric, err error) telegraf.Metric {
-	if err != nil {
-		panic(err)
-	}
+func MustMetric(v telegraf.Metric) telegraf.Metric {
 	return v
 }
 
@@ -27,8 +24,7 @@ func TestSerializeMetricFloat(t *testing.T) {
 	fields := map[string]interface{}{
 		"usage_idle": float64(91.5),
 	}
-	m, err := metric.New("cpu", tags, fields, now)
-	require.NoError(t, err)
+	m := metric.New("cpu", tags, fields, now)
 
 	testcases := []struct {
 		format   format
@@ -65,8 +61,7 @@ func TestSerializeMetricWithEmptyStringTag(t *testing.T) {
 	fields := map[string]interface{}{
 		"usage_idle": float64(91.5),
 	}
-	m, err := metric.New("cpu", tags, fields, now)
-	require.NoError(t, err)
+	m := metric.New("cpu", tags, fields, now)
 
 	testcases := []struct {
 		format   format
@@ -103,8 +98,7 @@ func TestSerializeWithSpaces(t *testing.T) {
 	fields := map[string]interface{}{
 		"usage_idle 1": float64(91.5),
 	}
-	m, err := metric.New("cpu metric", tags, fields, now)
-	require.NoError(t, err)
+	m := metric.New("cpu metric", tags, fields, now)
 
 	testcases := []struct {
 		format   format
@@ -141,8 +135,7 @@ func TestSerializeMetricInt(t *testing.T) {
 	fields := map[string]interface{}{
 		"usage_idle": int64(90),
 	}
-	m, err := metric.New("cpu", tags, fields, now)
-	require.NoError(t, err)
+	m := metric.New("cpu", tags, fields, now)
 
 	testcases := []struct {
 		format   format
@@ -179,8 +172,7 @@ func TestSerializeMetricString(t *testing.T) {
 	fields := map[string]interface{}{
 		"usage_idle": "foobar",
 	}
-	m, err := metric.New("cpu", tags, fields, now)
-	assert.NoError(t, err)
+	m := metric.New("cpu", tags, fields, now)
 
 	testcases := []struct {
 		format   format
@@ -218,8 +210,7 @@ func TestSerializeMetricBool(t *testing.T) {
 			"java_lang_GarbageCollector_Valid": value,
 		}
 
-		m, err := metric.New("cpu", tags, fields, tim)
-		require.NoError(t, err)
+		m := metric.New("cpu", tags, fields, tim)
 
 		return m
 	}
@@ -326,7 +317,7 @@ func TestSerializeMetricIsProperlySanitized(t *testing.T) {
 				fields := map[string]interface{}{
 					"usage_idle": float64(91.5),
 				}
-				return metric.New("cpu=1", nil, fields, now)
+				return metric.New("cpu=1", nil, fields, now), nil
 			},
 			format:      Carbon2FormatFieldSeparate,
 			expected:    fmt.Sprintf("metric=cpu:1 field=usage_idle  91.5 %d\n", now.Unix()),
@@ -337,7 +328,7 @@ func TestSerializeMetricIsProperlySanitized(t *testing.T) {
 				fields := map[string]interface{}{
 					"usage_idle": float64(91.5),
 				}
-				return metric.New("cpu=1", nil, fields, now)
+				return metric.New("cpu=1", nil, fields, now), nil
 			},
 			format:      Carbon2FormatFieldSeparate,
 			expected:    fmt.Sprintf("metric=cpu_1 field=usage_idle  91.5 %d\n", now.Unix()),
@@ -348,7 +339,7 @@ func TestSerializeMetricIsProperlySanitized(t *testing.T) {
 				fields := map[string]interface{}{
 					"usage_idle": float64(91.5),
 				}
-				return metric.New("cpu=1=tmp$custom", nil, fields, now)
+				return metric.New("cpu=1=tmp$custom", nil, fields, now), nil
 			},
 			format:      Carbon2FormatFieldSeparate,
 			expected:    fmt.Sprintf("metric=cpu:1:tmp:custom field=usage_idle  91.5 %d\n", now.Unix()),
@@ -359,7 +350,7 @@ func TestSerializeMetricIsProperlySanitized(t *testing.T) {
 				fields := map[string]interface{}{
 					"usage_idle": float64(91.5),
 				}
-				return metric.New("cpu=1=tmp$custom%namespace", nil, fields, now)
+				return metric.New("cpu=1=tmp$custom%namespace", nil, fields, now), nil
 			},
 			format:      Carbon2FormatFieldSeparate,
 			expected:    fmt.Sprintf("metric=cpu:1:tmp:custom:namespace field=usage_idle  91.5 %d\n", now.Unix()),
@@ -370,7 +361,7 @@ func TestSerializeMetricIsProperlySanitized(t *testing.T) {
 				fields := map[string]interface{}{
 					"usage_idle": float64(91.5),
 				}
-				return metric.New("cpu=1=tmp$custom%namespace", nil, fields, now)
+				return metric.New("cpu=1=tmp$custom%namespace", nil, fields, now), nil
 			},
 			format:      Carbon2FormatMetricIncludesField,
 			expected:    fmt.Sprintf("metric=cpu:1:tmp:custom:namespace_usage_idle  91.5 %d\n", now.Unix()),
@@ -381,7 +372,7 @@ func TestSerializeMetricIsProperlySanitized(t *testing.T) {
 				fields := map[string]interface{}{
 					"usage_idle": float64(91.5),
 				}
-				return metric.New("cpu=1=tmp$custom%namespace", nil, fields, now)
+				return metric.New("cpu=1=tmp$custom%namespace", nil, fields, now), nil
 			},
 			format:      Carbon2FormatMetricIncludesField,
 			expected:    fmt.Sprintf("metric=cpu_1_tmp_custom_namespace_usage_idle  91.5 %d\n", now.Unix()),
@@ -392,7 +383,7 @@ func TestSerializeMetricIsProperlySanitized(t *testing.T) {
 				fields := map[string]interface{}{
 					"usage_idle": float64(91.5),
 				}
-				return metric.New("cpu=1=tmp$custom%namespace", nil, fields, now)
+				return metric.New("cpu=1=tmp$custom%namespace", nil, fields, now), nil
 			},
 			format:      Carbon2FormatMetricIncludesField,
 			expectedErr: true,

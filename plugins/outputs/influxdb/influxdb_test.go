@@ -200,7 +200,7 @@ func TestWriteRecreateDatabaseIfDatabaseNotFound(t *testing.T) {
 	err := output.Connect()
 	require.NoError(t, err)
 
-	m, err := metric.New(
+	m := metric.New(
 		"cpu",
 		map[string]string{},
 		map[string]interface{}{
