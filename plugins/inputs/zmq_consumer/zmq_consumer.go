@@ -2,7 +2,6 @@ package zmq_consumer
 
 import (
 	"context"
-	"fmt"
 	"sync"
 
 	"github.com/influxdata/telegraf"
@@ -97,7 +96,12 @@ func (z *zmqConsumer) receiver(ctx context.Context) {
 		default:
 			msg, err := z.subscriber.Recv(zmq.DONTWAIT)
 			if err == nil {
-				fmt.Println(msg)
+				metrics, _ := z.parser.Parse([]byte(msg))
+				for _, metric := range metrics {
+					z.acc.AddMetric(metric)
+				}
+				// z.acc.AddTrackingMetricGroup(metrics)
+				// fmt.Println(metrics)
 			}
 		}
 	}
